@@ -29,7 +29,7 @@ struct material
     vec4 ambient, diffuse, specular;
     float spec_co;
     int illum;
-    const texture *tex;
+    const dake::texture *tex;
 };
 
 // A face is a list of face points

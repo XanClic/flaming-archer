@@ -8,7 +8,7 @@
 #include "texture.h"
 
 
-texture::texture(const std::string &name):
+dake::texture::texture(const std::string &name):
     fname(name)
 {
     cgv::data::data_format df;
@@ -33,32 +33,32 @@ texture::texture(const std::string &name):
 }
 
 
-texture::~texture(void)
+dake::texture::~texture(void)
 {
     glDeleteTextures(1, &tex_id);
 }
 
 
-void texture::bind(void) const
+void dake::texture::bind(void) const
 {
     glBindTexture(GL_TEXTURE_2D, tex_id);
 }
 
 
-texture_manager::~texture_manager(void)
+dake::texture_manager::~texture_manager(void)
 {
     for (std::list<texture *>::iterator i = textures.begin(); i != textures.end(); i++)
         delete *i;
 }
 
 
-const texture *texture_manager::find_texture(const std::string &name)
+const dake::texture *dake::texture_manager::find_texture(const std::string &name)
 {
-    for (std::list<texture *>::iterator i = textures.begin(); i != textures.end(); i++)
+    for (std::list<dake::texture *>::iterator i = textures.begin(); i != textures.end(); i++)
         if (name == (*i)->get_fname())
             return *i;
 
-    texture *nt = new texture(name);
+    texture *nt = new dake::texture(name);
     textures.push_back(nt);
     return nt;
 }
