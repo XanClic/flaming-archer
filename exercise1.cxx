@@ -53,17 +53,17 @@ void exercise1::timer_event(double , double dt)
         counter++;
         post_redraw();
 
-        particle_generator::instance().tick();
+        dake::particle_generator::instance().tick(fps);
         if (((counter + 1) % 100 <= 3) && (!ascending || (counter < ascension_counter_start)) && !free_mode)
         {
             for (int i = 0; i < 20; i++)
             {
                 float a = frand() * 2 * M_PI;
-                particle_generator::instance()
-                    .new_particle(rand() % 80 + 20, vec3(0.f, -.5f, 0.f), vec3(.6f * cosf(a), frand() * .2f + .4f, .6f * sinf(a)))
-                    .add_force(force_air_drag)
-                    .add_force(force_gravity)
-                    .add_force(force_bounce);
+                dake::particle_generator::instance()
+                    .new_particle(frand() * 2.f + .7f, vec3(0.f, -.5f, 0.f), vec3(.6f * cosf(a), frand() * .2f + .4f, .6f * sinf(a)))
+                    .add_force(dake::particle::AIR_DRAG)
+                    .add_force(dake::particle::GRAVITY)
+                    .add_force(dake::particle::BOUNCE);
             }
         }
     }
@@ -323,8 +323,9 @@ void exercise1::draw(context& c) {
     if (animation_state >= ANI_ASC_ASC1)
     {
         ascension_speed += ascension_acceleration;
-        ascension_speed = force_air_drag(ascension_position, ascension_speed);
-        ascension_speed = force_gravity(ascension_position, ascension_speed);
+        // Fix me: Get the actual time passed
+        ascension_speed = dake::force_air_drag(ascension_position, ascension_speed, 1.f / 30.f);
+        ascension_speed = dake::force_gravity(ascension_position, ascension_speed, 1.f / 30.f);
 
         ascension_position += ascension_speed;
 
@@ -360,11 +361,11 @@ void exercise1::draw(context& c) {
                      + vec3(1.5f, -6.f - ascension_speed.y(), 0.f);
             vec3 vel = randomness * 2.f * vec3(frand() - .3f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
 
-            particle_generator::instance().new_particle(rand() % 40 + 30,
+            dake::particle_generator::instance().new_particle(frand() * 1.5f + 1.f,
                     vec3(mat * vec4(pos.x(), pos.y(), pos.z(), 1.f)), vec3(mat * vec4(vel.x(), vel.y(), vel.z(), 0.f)))
-                .add_force(force_air_drag)
-                .add_force(force_gravity)
-                .add_force(force_bounce);
+                .add_force(dake::particle::AIR_DRAG)
+                .add_force(dake::particle::GRAVITY)
+                .add_force(dake::particle::BOUNCE);
         }
 
         for (int i = 0; i < particles; i++)
@@ -373,11 +374,11 @@ void exercise1::draw(context& c) {
                      + vec3(-1.5f, -6.f - ascension_speed.y(), 0.f);
             vec3 vel = randomness * 2.f * vec3(frand() - .7f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
 
-            particle_generator::instance().new_particle(rand() % 40 + 30,
+            dake::particle_generator::instance().new_particle(frand() * 1.5f + 1.f,
                     vec3(mat * vec4(pos.x(), pos.y(), pos.z(), 1.f)), vec3(mat * vec4(vel.x(), vel.y(), vel.z(), 0.f)))
-                .add_force(force_air_drag)
-                .add_force(force_gravity)
-                .add_force(force_bounce);
+                .add_force(dake::particle::AIR_DRAG)
+                .add_force(dake::particle::GRAVITY)
+                .add_force(dake::particle::BOUNCE);
         }
     }
 
@@ -489,7 +490,7 @@ void exercise1::draw(context& c) {
 
     // *** End of task 1.2.6 ***
 
-    particle_generator::instance().draw();
+    dake::particle_generator::instance().draw();
 
     // Re-enable backface culling
     glEnable(GL_CULL_FACE);
