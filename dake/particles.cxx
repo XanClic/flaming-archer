@@ -1,74 +1,88 @@
 #include <cgv_gl/gl/gl.h>
+#include <cmath>
 #include <cstdio>
 
 #include "particles.h"
 
 
-vec3 force_air_drag(const vec3 &position, const vec3 &speed)
+vec3 dake::force_air_drag(const vec3 &position, const vec3 &speed, float time_passed)
 {
     (void)position;
-    return speed * .95f;
+    return speed * powf(.2f, time_passed);
 }
 
-vec3 force_gravity(const vec3 &position, const vec3 &speed)
+vec3 dake::force_gravity(const vec3 &position, const vec3 &speed, float time_passed)
 {
     (void)position;
-    return vec3(speed.x(), speed.y() - .05f, speed.z());
+    // 1.5 should be 9.81; but the units used here aren't meters anyway
+    return vec3(speed.x(), speed.y() - 1.5f * time_passed, speed.z());
 }
 
-vec3 force_bounce(const vec3 &position, const vec3 &speed)
+vec3 dake::force_bounce(const vec3 &position, const vec3 &speed, float time_passed)
 {
+    (void)time_passed;
     if (position.y() <= -5.4f)
         return vec3(speed.x(), -speed.y(), speed.z());
     return speed;
 }
 
 
-particle::particle(int lifetime, const vec3 &initial_position, const vec3 &initial_speed):
+static vec3 (*const force_array[])(const vec3 &position, const vec3 &speed, float time_passed) = {
+    [dake::particle::AIR_DRAG] = dake::force_air_drag,
+    [dake::particle::GRAVITY]  = dake::force_gravity,
+    [dake::particle::BOUNCE]   = dake::force_bounce
+};
+
+
+dake::particle::particle(float lifetime, const vec3 &initial_position, const vec3 &initial_speed):
     position(initial_position),
     speed(initial_speed),
     lifetime_rem(lifetime),
-    lifetime_full(lifetime)
+    lifetime_full(lifetime),
+    force_mask(0)
 {
 }
 
-particle &particle::add_force(force_apply_t force)
+dake::particle &dake::particle::add_force(dake::particle::force f)
 {
-    forces.push_back(reinterpret_cast<void *>(force));
+    force_mask |= (1 << f);
     return *this;
 }
 
-void particle::apply_forces(void)
+void dake::particle::apply_forces(float time_passed)
 {
-    for (std::list<void *>::iterator i = forces.begin(); i != forces.end(); i++)
-        speed = reinterpret_cast<force_apply_t>(*i)(position, speed);
+    for (int i = 0; i < 16; i++)
+        if (force_mask & (1 << i))
+            speed = force_array[i](position, speed, time_passed);
 
     position += speed;
 
-    if (lifetime_rem > 0)
-        lifetime_rem--;
+    if (lifetime_rem >= time_passed)
+        lifetime_rem -= time_passed;
+    else
+        lifetime_rem = 0.f;
 }
 
-void particle::draw(void)
+void dake::particle::draw(void)
 {
     glVertex3fv(position);
     glVertex3fv(position + speed);
 }
 
-float particle::lifetime(void)
+float dake::particle::lifetime(void)
 {
-    return (float)lifetime_rem / lifetime_full;
+    return lifetime_rem / lifetime_full;
 }
 
 
-particle &particle_generator::new_particle(int lifetime, const vec3 &initial_position, const vec3 &initial_speed)
+dake::particle &dake::particle_generator::new_particle(int lifetime, const vec3 &initial_position, const vec3 &initial_speed)
 {
     particles.push_back(particle(lifetime, initial_position, initial_speed));
     return particles.back();
 }
 
 
-void particle_generator::draw(void)
+void dake::particle_generator::draw(void)
 {
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_LIGHTING);
@@ -78,7 +92,7 @@ void particle_generator::draw(void)
 
     glBegin(GL_LINES);
 
-    for (std::list<particle>::iterator i = particles.begin(); i != particles.end(); i++)
+    for (std::list<dake::particle>::iterator i = particles.begin(); i != particles.end(); i++)
     {
         float lifetime = (*i).lifetime();
 
@@ -99,11 +113,11 @@ void particle_generator::draw(void)
 }
 
 
-void particle_generator::tick(void)
+void dake::particle_generator::tick(float time_passed)
 {
-    for (std::list<particle>::iterator i = particles.begin(); i != particles.end();)
+    for (std::list<dake::particle>::iterator i = particles.begin(); i != particles.end();)
     {
-        (*i).apply_forces();
+        (*i).apply_forces(time_passed);
 
         if ((*i).lifetime() <= 0.f)
             particles.erase(i++);
