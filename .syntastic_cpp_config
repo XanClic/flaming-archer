@@ -1,0 +1,3 @@
+-I../framework/include
+-I../framework/include/libs
+-Idake
