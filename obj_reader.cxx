@@ -1,4 +1,5 @@
 #include "obj_reader.h"
+#include "texture.h"
 
 #include <cstdio>
 #include <cstring>
@@ -364,7 +365,7 @@ void obj_reader::process_mtllib(std::stringstream &line)
             {
                 if (fname[0] != '/')
                     fname = obj_dirname + "/" + fname;
-                mat->tex = texture_manager::instance().find_texture(fname);
+                mat->tex = dake::texture_manager::instance().find_texture(fname);
             }
         }
     }

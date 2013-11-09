@@ -6,6 +6,9 @@
 #include <cgv_gl/gl/gl.h>
 
 
+namespace dake
+{
+
 class texture
 {
     private:
@@ -39,5 +42,7 @@ class texture_manager
             return *texman;
         }
 };
+
+}
 
 #endif
