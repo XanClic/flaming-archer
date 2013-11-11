@@ -88,6 +88,7 @@ void dake::particle_generator::draw(void)
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
+    glDepthMask(GL_FALSE);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glBegin(GL_LINES);
@@ -109,6 +110,7 @@ void dake::particle_generator::draw(void)
     glEnd();
 
     glBlendFunc(GL_ONE, GL_ZERO);
+    glDepthMask(GL_TRUE);
     glPopAttrib();
 }
 
