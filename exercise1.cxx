@@ -344,18 +344,12 @@ void exercise1::draw(context& c) {
                 ascension_speed.y() = 0.f;
         }
 
-        glLoadIdentity();
-        glTranslatef(ascension_position.x(), ascension_position.y(), ascension_position.z());
+        dake::mat4 mat;
+        mat.translate(ascension_position);
 
         dake::vec3 direction(sinf(dir_x), cosf(dir_x) * cosf(dir_y), sinf(dir_y));
-        dake::vec3 rot(dake::vec3(0.f, 1.f, 0.f) ^ direction.normalized());
-        glRotatef(acosf(direction.y()) * 180.f / M_PI, rot.x(), rot.y(), rot.z());
+        mat.rotate(acosf(direction.y()), dake::vec3(0.f, 1.f, 0.f) ^ direction.normalized());
 
-        dake::mat4 mat;
-        glGetFloatv(GL_MODELVIEW_MATRIX, mat);
-
-        glPopMatrix();
-        glPushMatrix();
         glMultMatrixf(mat);
 
         int particles = (int)(ascension_acceleration.length() * 4000.f);
