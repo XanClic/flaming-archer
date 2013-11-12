@@ -5,30 +5,10 @@
 #include "vector.h"
 
 
+#ifdef __GNUC__
 #define X64_ASSEMBLY
 #define X86_ASSEMBLY
-
-
-static inline float inv_sqrtf(float val) __attribute__((pure));
-
-static inline float inv_sqrtf(float val)
-{
-    // Some measurement showed that rsqrtss takes 67 % less time than the
-    // infamous integer approximation below (without the Newton part, it's
-    // still about 25 % faster).
-#ifdef X86_ASSEMBLY
-    float ret;
-    __asm__ __volatile__ ("rsqrtss %1,%0" : "=x"(ret) : "x"(val));
-    return ret;
-#else
-    // hell yeah
-    float half = .5f * val;
-    uint32_t i = 0x5F375A86 - (*(uint32_t *)&val >> 1);
-    val = *(float *)&i;
-    val *= 1.5f - half * val * val;
-    return val;
 #endif
-}
 
 
 dake::mat4 &dake::mat4::operator*=(const dake::mat4 &m)
@@ -152,10 +132,10 @@ dake::mat4 &dake::mat4::translate(const dake::vec3 &vec)
             : "memory"
     );
 #else
-    d[12] += vec.x * d[ 0] + vec.y * d[ 4] + vec.z * d[ 8];
-    d[13] += vec.x * d[ 1] + vec.y * d[ 5] + vec.z * d[ 9];
-    d[14] += vec.x * d[ 2] + vec.y * d[ 6] + vec.z * d[10];
-    d[15] += vec.x * d[ 3] + vec.y * d[ 7] + vec.z * d[11];
+    d[12] += vec.x() * d[ 0] + vec.y() * d[ 4] + vec.z() * d[ 8];
+    d[13] += vec.x() * d[ 1] + vec.y() * d[ 5] + vec.z() * d[ 9];
+    d[14] += vec.x() * d[ 2] + vec.y() * d[ 6] + vec.z() * d[10];
+    d[15] += vec.x() * d[ 3] + vec.y() * d[ 7] + vec.z() * d[11];
 #endif
 
     return *this;
@@ -306,10 +286,10 @@ dake::mat4 &dake::mat4::scale(const dake::vec3 &fac)
             : "memory"
     );
 #else
-    d[0] *= fac.x; d[4] *= fac.y; d[ 8] *= fac.z;
-    d[1] *= fac.x; d[5] *= fac.y; d[ 9] *= fac.z;
-    d[2] *= fac.x; d[6] *= fac.y; d[10] *= fac.z;
-    d[3] *= fac.x; d[7] *= fac.y; d[11] *= fac.z;
+    d[0] *= fac.x(); d[4] *= fac.y(); d[ 8] *= fac.z();
+    d[1] *= fac.x(); d[5] *= fac.y(); d[ 9] *= fac.z();
+    d[2] *= fac.x(); d[6] *= fac.y(); d[10] *= fac.z();
+    d[3] *= fac.x(); d[7] *= fac.y(); d[11] *= fac.z();
 #endif
 
     return *this;

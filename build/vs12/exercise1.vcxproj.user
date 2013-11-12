@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommand>$(ProjectDir)../../../framework/bin/win32_vs12/cgv_viewer_d.exe</LocalDebuggerCommand>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>plugin:"../framework/lib/win32_vs12/cg_fltk_d.dll" plugin:"../framework/lib/win32_vs12/crg_stereo_view_d.dll" plugin:"build/vs12/Debug/exercise1.dll"</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)../../</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>PATH=.;..\framework\lib\win32_vs12;%PATH% $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommand>$(ProjectDir)../../../framework/bin/win32_vs12/cgv_viewer.exe</LocalDebuggerCommand>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>plugin:"../framework/lib/win32_vs12/cg_fltk.dll" plugin:"../framework/lib/win32_vs12/crg_stereo_view.dll" plugin:"build/vs12/Release/exercise1.dll"</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)../../</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerEnvironment>PATH=.;..\framework\lib\win32_vs12;%PATH% $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+  </PropertyGroup>
+</Project>

@@ -3,10 +3,9 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <cgv/math/fvec.h>
 
-#include "texture.h"
-#include "vector.h"
+#include "dake/texture.h"
+#include "dake/vector.h"
 
 
 // A face point contains indices for a vertex, a normal

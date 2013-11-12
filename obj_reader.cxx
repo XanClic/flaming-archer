@@ -1,13 +1,40 @@
 #include "obj_reader.h"
-#include "texture.h"
+
+#include "dake/texture.h"
 
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#ifdef __GNUC__
 #include <libgen.h>
+#endif
 
 using namespace std;
+
+
+#ifndef __GNUC__
+char *dirname(char *path)
+{
+    char *last_slash = NULL;
+    size_t pathlen;
+
+    for (pathlen = 0; path[pathlen]; pathlen++)
+        if ((path[pathlen] == '/') && path[pathlen + 1])
+            last_slash = &path[pathlen];
+
+    if (last_slash == NULL)
+    {
+        static char tmp[2] = { 0 };
+        tmp[0] = (path[0] == '/') ? '/' : '.';
+        return tmp;
+    }
+
+    last_slash[last_slash == path] = 0;
+
+    return path;
+}
+#endif
 
 
 obj_reader::obj_reader(const std::string &filename)
@@ -21,9 +48,16 @@ obj_reader::obj_reader(const std::string &filename)
         return;
     }
 
+#ifdef __GNUC__
     char copy[filename.length() + 1];
+#else
+    char *copy = new char[filename.length() + 1];
+#endif
     strcpy(copy, filename.c_str());
     obj_dirname = std::string(dirname(copy));
+#ifdef __GNUC__
+    delete[] copy;
+#endif
 
 
     static material *default_mat = NULL;

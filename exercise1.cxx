@@ -1,9 +1,10 @@
 #include "exercise1.h"
-#include "matrix.h"
 #include "obj_reader.h"
-#include "particles.h"
-#include "texture.h"
-#include "vector.h"
+
+#include "dake/matrix.h"
+#include "dake/particles.h"
+#include "dake/texture.h"
+#include "dake/vector.h"
 
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -24,6 +25,7 @@ exercise1::exercise1():node("Exercise 1"),
     free_mode(false),
     timer_offset(0.0),
     meshs_loaded(false),
+    ascending(false),
     dir_x(0.f),
     dir_y(0.f)
 {

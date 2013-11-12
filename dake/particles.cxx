@@ -28,9 +28,13 @@ dake::vec3 dake::force_bounce(const dake::vec3 &position, const dake::vec3 &spee
 
 
 static dake::vec3 (*const force_array[])(const dake::vec3 &position, const dake::vec3 &speed, float time_passed) = {
+#ifdef __GNUC__
     [dake::particle::AIR_DRAG] = dake::force_air_drag,
     [dake::particle::GRAVITY]  = dake::force_gravity,
     [dake::particle::BOUNCE]   = dake::force_bounce
+#else
+    dake::force_air_drag, dake::force_gravity, dake::force_bounce
+#endif
 };
 
 
@@ -75,7 +79,7 @@ float dake::particle::lifetime(void)
 }
 
 
-dake::particle &dake::particle_generator::new_particle(int lifetime, const dake::vec3 &initial_position, const dake::vec3 &initial_speed)
+dake::particle &dake::particle_generator::new_particle(float lifetime, const dake::vec3 &initial_position, const dake::vec3 &initial_speed)
 {
     particles.push_back(particle(lifetime, initial_position, initial_speed));
     return particles.back();
