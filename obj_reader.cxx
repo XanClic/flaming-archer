@@ -3,8 +3,10 @@
 #include "dake/texture.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <fstream>
 #ifdef __GNUC__
 #include <libgen.h>
@@ -55,8 +57,8 @@ obj_reader::obj_reader(const std::string &filename)
 #endif
     strcpy(copy, filename.c_str());
     obj_dirname = std::string(dirname(copy));
-#ifdef __GNUC__
-    delete[] copy;
+#ifndef __GNUC__
+    delete copy;
 #endif
 
 
