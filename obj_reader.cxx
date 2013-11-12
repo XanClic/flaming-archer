@@ -31,9 +31,9 @@ obj_reader::obj_reader(const std::string &filename)
     {
         default_mat = new material;
         default_mat->name = std::string("__DEFAULT__");
-        default_mat->ambient = vec4(0.f, 0.f, 0.f, 1.f);
-        default_mat->diffuse = vec4(1.f, 1.f, 1.f, 1.f);
-        default_mat->specular = vec4(1.f, 1.f, 1.f, 1.f);
+        default_mat->ambient = dake::vec4(0.f, 0.f, 0.f, 1.f);
+        default_mat->diffuse = dake::vec4(1.f, 1.f, 1.f, 1.f);
+        default_mat->specular = dake::vec4(1.f, 1.f, 1.f, 1.f);
         default_mat->spec_co = 100.f;
         default_mat->illum = 2;
         default_mat->tex = NULL;
@@ -118,9 +118,9 @@ void obj_reader::calculate_bounding_box()
     // for example pt1[0] accesses the first component of "pt1" etc.
 
     // for (auto vertex: vertices)
-    for (vector<vec3>::iterator vi = vertices.begin(); vi != vertices.end(); vi++)
+    for (vector<dake::vec3>::iterator vi = vertices.begin(); vi != vertices.end(); vi++)
     {
-        const vec3 &vertex = *vi;
+        const dake::vec3 &vertex = *vi;
 
         for (int i = 0; i < 3; i++)
         {
@@ -139,7 +139,7 @@ void obj_reader::calculate_bounding_box()
 
 
 // Get the minimum point of the bounding box
-const vec3& obj_reader::get_bbox_min()
+const dake::vec3& obj_reader::get_bbox_min()
 {
     return bbox_min;
 }
@@ -148,7 +148,7 @@ const vec3& obj_reader::get_bbox_min()
 
 
 // Get the maximum point of the bounding box
-const vec3& obj_reader::get_bbox_max()
+const dake::vec3& obj_reader::get_bbox_max()
 {
     return bbox_max;
 }
@@ -166,7 +166,7 @@ void obj_reader::process_vertex(std::stringstream &line)
     // The method must parse the string stream and read 3 floating point
     // values which are stored into a variable of the type "vec3". This
     // variable must be added to the list of vertices.
-    vec3 new_vertex;
+    dake::vec3 new_vertex;
     // Extract 3 floating point numbers from the line
     // and store them in x(), y() or z().
     line>>new_vertex.x()>>new_vertex.y()>>new_vertex.z();
@@ -194,7 +194,7 @@ void obj_reader::process_normal(std::stringstream &line)
     // of the .obj-file where a normal is defined. The reading pointer
     // if this stream lies at the first normal coordinate.
     // Take a look at process_vertex for hints on this task.
-    vec3 new_normal;
+    dake::vec3 new_normal;
     line >> new_normal.x() >> new_normal.y() >> new_normal.z();
     normals.push_back(new_normal);
 
@@ -206,7 +206,7 @@ void obj_reader::process_normal(std::stringstream &line)
 
 void obj_reader::process_tex_coord(std::stringstream &line)
 {
-    vec2 new_tex_coord;
+    dake::vec2 new_tex_coord;
     line >> new_tex_coord.x() >> new_tex_coord.y();
     tex_coords.push_back(new_tex_coord);
 }
@@ -390,7 +390,7 @@ void obj_reader::process_usemtl(std::stringstream &line)
 
 
 // Get the list of vertices
-const vector<vec3> &obj_reader::get_vertices() {
+const vector<dake::vec3> &obj_reader::get_vertices() {
     return vertices;
 }
 
@@ -398,14 +398,14 @@ const vector<vec3> &obj_reader::get_vertices() {
 
 
 // Get the list of normals
-const vector<vec3> &obj_reader::get_normals() {
+const vector<dake::vec3> &obj_reader::get_normals() {
     return normals;
 }
 
 
 
 // Get the list of texture coordinates
-const vector<vec2> &obj_reader::get_tex_coords(void) {
+const vector<dake::vec2> &obj_reader::get_tex_coords(void) {
     return tex_coords;
 }
 

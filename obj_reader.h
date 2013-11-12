@@ -6,11 +6,7 @@
 #include <cgv/math/fvec.h>
 
 #include "texture.h"
-
-
-typedef cgv::math::fvec<float, 4> vec4;
-typedef cgv::math::fvec<float, 3> vec3;
-typedef cgv::math::fvec<float, 2> vec2;
+#include "vector.h"
 
 
 // A face point contains indices for a vertex, a normal
@@ -26,7 +22,7 @@ struct material
     material(void) { tex = NULL; }
 
     std::string name;
-    vec4 ambient, diffuse, specular;
+    dake::vec4 ambient, diffuse, specular;
     float spec_co;
     int illum;
     const dake::texture *tex;
@@ -43,18 +39,18 @@ class obj_reader {
 
 private:
     // List of points. Access this list with the method "get_vertices".
-    std::vector<vec3> vertices;
+    std::vector<dake::vec3> vertices;
     // List of normals. Access this list with the method "get_normals".
-    std::vector<vec3> normals;
+    std::vector<dake::vec3> normals;
     // List of texture coordinates. Access this list with the method "get_tex_coords".
-    std::vector<vec2> tex_coords;
+    std::vector<dake::vec2> tex_coords;
     // List of faces. Access this list with the method "get_faces".
     std::vector<face> faces;
     // List of materials.
     std::vector<material> materials;
 
     // The minimum and maximum point of the bounding box
-    vec3 bbox_min, bbox_max;
+    dake::vec3 bbox_min, bbox_max;
 
     // For internal use during loading only
     const material *current_mat;
@@ -107,13 +103,13 @@ public:
     obj_reader(const std::string &filename);
 
     // Get the list of vertices
-    const std::vector<vec3> &get_vertices();
+    const std::vector<dake::vec3> &get_vertices();
 
     // Get the list of normals
-    const std::vector<vec3> &get_normals();
+    const std::vector<dake::vec3> &get_normals();
 
     // Get the list of texture coordinates
-    const std::vector<vec2> &get_tex_coords(void);
+    const std::vector<dake::vec2> &get_tex_coords(void);
 
     // Get the list of faces
     const std::vector<face> &get_faces();
@@ -122,10 +118,10 @@ public:
     const material &get_material(const std::string &name);
 
     // Get the minimum point of the bounding box
-    const vec3 &get_bbox_min();
+    const dake::vec3 &get_bbox_min();
 
     // Get the maximum point of the bounding box
-    const vec3 &get_bbox_max();
+    const dake::vec3 &get_bbox_max();
 
     std::string obj_dirname;
 };

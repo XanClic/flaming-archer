@@ -30,7 +30,10 @@ cgv_add_module(exercise1
         ../../dake/particles.h
         ../../dake/particles.cxx
         ../../dake/texture.h
-        ../../dake/texture.cxx)
+        ../../dake/texture.cxx
+        ../../dake/vector.h
+        ../../dake/matrix.h
+        ../../dake/matrix.cxx)
 
 # Set include directories
 include_directories(

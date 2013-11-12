@@ -5,36 +5,36 @@
 #include "particles.h"
 
 
-vec3 dake::force_air_drag(const vec3 &position, const vec3 &speed, float time_passed)
+dake::vec3 dake::force_air_drag(const dake::vec3 &position, const dake::vec3 &speed, float time_passed)
 {
     (void)position;
     return speed * powf(.2f, time_passed);
 }
 
-vec3 dake::force_gravity(const vec3 &position, const vec3 &speed, float time_passed)
+dake::vec3 dake::force_gravity(const dake::vec3 &position, const dake::vec3 &speed, float time_passed)
 {
     (void)position;
     // 1.5 should be 9.81; but the units used here aren't meters anyway
-    return vec3(speed.x(), speed.y() - 1.5f * time_passed, speed.z());
+    return dake::vec3(speed.x(), speed.y() - 1.5f * time_passed, speed.z());
 }
 
-vec3 dake::force_bounce(const vec3 &position, const vec3 &speed, float time_passed)
+dake::vec3 dake::force_bounce(const dake::vec3 &position, const dake::vec3 &speed, float time_passed)
 {
     (void)time_passed;
     if (position.y() <= -5.4f)
-        return vec3(speed.x(), -speed.y(), speed.z());
+        return dake::vec3(speed.x(), -speed.y(), speed.z());
     return speed;
 }
 
 
-static vec3 (*const force_array[])(const vec3 &position, const vec3 &speed, float time_passed) = {
+static dake::vec3 (*const force_array[])(const dake::vec3 &position, const dake::vec3 &speed, float time_passed) = {
     [dake::particle::AIR_DRAG] = dake::force_air_drag,
     [dake::particle::GRAVITY]  = dake::force_gravity,
     [dake::particle::BOUNCE]   = dake::force_bounce
 };
 
 
-dake::particle::particle(float lifetime, const vec3 &initial_position, const vec3 &initial_speed):
+dake::particle::particle(float lifetime, const dake::vec3 &initial_position, const dake::vec3 &initial_speed):
     position(initial_position),
     speed(initial_speed),
     lifetime_rem(lifetime),
@@ -75,7 +75,7 @@ float dake::particle::lifetime(void)
 }
 
 
-dake::particle &dake::particle_generator::new_particle(int lifetime, const vec3 &initial_position, const vec3 &initial_speed)
+dake::particle &dake::particle_generator::new_particle(int lifetime, const dake::vec3 &initial_position, const dake::vec3 &initial_speed)
 {
     particles.push_back(particle(lifetime, initial_position, initial_speed));
     return particles.back();
