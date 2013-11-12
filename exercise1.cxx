@@ -1,7 +1,9 @@
 #include "exercise1.h"
+#include "matrix.h"
 #include "obj_reader.h"
 #include "particles.h"
 #include "texture.h"
+#include "vector.h"
 
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
