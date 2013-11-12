@@ -151,8 +151,13 @@ void exercise1::toggle_free_mode(void)
 #include <cstdio>
 bool exercise1::handle(cgv::gui::event &e)
 {
+    static bool mouse_free_mode_before;
+
     if (!free_mode)
+    {
+        mouse_free_mode_before = false;
         return false;
+    }
 
 
     if (e.get_kind() == cgv::gui::EID_KEY)
@@ -183,6 +188,17 @@ bool exercise1::handle(cgv::gui::event &e)
         cgv::gui::mouse_event &me = *dynamic_cast<cgv::gui::mouse_event *>(&e);
         if (me.get_action() == cgv::gui::MA_MOVE)
         {
+            bool free_mode_enter = !mouse_free_mode_before && !ascending;
+            mouse_free_mode_before = !ascending;
+
+            if (free_mode_enter)
+            {
+                last_x = me.get_x();
+                last_y = me.get_y();
+                dir_x = 0.f;
+                dir_y = 0.f;
+            }
+
             int dx = me.get_x() - last_x, dy = me.get_y() - last_y;
             last_x += dx;
             last_y += dy;
