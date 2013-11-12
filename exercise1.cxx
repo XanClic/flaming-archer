@@ -60,7 +60,7 @@ void exercise1::timer_event(double , double dt)
             {
                 float a = frand() * 2 * M_PI;
                 dake::particle_generator::instance()
-                    .new_particle(frand() * 2.f + .7f, vec3(0.f, -.5f, 0.f), vec3(.6f * cosf(a), frand() * .2f + .4f, .6f * sinf(a)))
+                    .new_particle(frand() * 2.f + .7f, dake::vec3(0.f, -.5f, 0.f), dake::vec3(.6f * cosf(a), frand() * .2f + .4f, .6f * sinf(a)))
                     .add_force(dake::particle::AIR_DRAG)
                     .add_force(dake::particle::GRAVITY)
                     .add_force(dake::particle::BOUNCE);
@@ -117,9 +117,9 @@ void exercise1::ascension(void)
 {
     ascending = true;
     ascension_counter_start = ((counter + 24) / 100) * 100 + 75;
-    ascension_acceleration = vec3(0.f, 0.f, 0.f);
-    ascension_speed = vec3(0.f, 0.f, 0.f);
-    ascension_position = vec3(0.f, 0.f, 0.f);
+    ascension_acceleration = dake::vec3(0.f, 0.f, 0.f);
+    ascension_speed = dake::vec3(0.f, 0.f, 0.f);
+    ascension_position = dake::vec3(0.f, 0.f, 0.f);
     dir_x = dir_y = 0.f;
 
     ascension_step_ani = sinf(ascension_counter_start / 8.f);
@@ -165,12 +165,11 @@ bool exercise1::handle(cgv::gui::event &e)
             space = ke.get_action() == cgv::gui::KA_PRESS;
 
         if (!space)
-            ascension_acceleration = vec3(0.f, 0.f, 0.f);
+            ascension_acceleration = dake::vec3(0.f, 0.f, 0.f);
         else
         {
-            vec3 direction(sinf(dir_x), cosf(dir_x) * cosf(dir_y), sinf(dir_y));
-            direction.normalize();
-            ascension_acceleration = direction * (shift ? .16f : .08f);
+            dake::vec3 direction(sinf(dir_x), cosf(dir_x) * cosf(dir_y), sinf(dir_y));
+            ascension_acceleration = direction.normalized() * (shift ? .16f : .08f);
         }
 
         return true;
@@ -236,7 +235,7 @@ void exercise1::draw(context& c) {
         meshs_loaded = true;
     }
 
-    vec4 robot_col(.6f, .6f, .6f, 1.f);
+    dake::vec4 robot_col(.6f, .6f, .6f, 1.f);
 
 
     // Disable face culling
@@ -315,14 +314,14 @@ void exercise1::draw(context& c) {
     if (animation_state == ANI_ASC_ASC1)
     {
         if (ascension_acceleration.y() < .06)
-            ascension_acceleration += vec3(0.f, .001f, 0.f);
+            ascension_acceleration += dake::vec3(0.f, .001f, 0.f);
         else
-            ascension_acceleration += vec3(0.f, .0001f, 0.f);
+            ascension_acceleration += dake::vec3(0.f, .0001f, 0.f);
     }
     else if (animation_state == ANI_ASC_ASC2)
-        ascension_acceleration = vec3(0.f, .06f, 0.f);
+        ascension_acceleration = dake::vec3(0.f, .06f, 0.f);
     else if (animation_state != ANI_FREE)
-        ascension_acceleration = vec3(0.f, 0.f, 0.f);
+        ascension_acceleration = dake::vec3(0.f, 0.f, 0.f);
 
     glPushMatrix();
 
@@ -346,12 +345,11 @@ void exercise1::draw(context& c) {
         glLoadIdentity();
         glTranslatef(ascension_position.x(), ascension_position.y(), ascension_position.z());
 
-        vec3 direction(sinf(dir_x), cosf(dir_x) * cosf(dir_y), sinf(dir_y));
-        direction.normalize();
-        vec3 rot(cross(vec3(0.f, 1.f, 0.f), direction));
+        dake::vec3 direction(sinf(dir_x), cosf(dir_x) * cosf(dir_y), sinf(dir_y));
+        dake::vec3 rot(dake::vec3(0.f, 1.f, 0.f) ^ direction.normalized());
         glRotatef(acosf(direction.y()) * 180.f / M_PI, rot.x(), rot.y(), rot.z());
 
-        fmat<float, 4, 4> mat;
+        dake::mat4 mat;
         glGetFloatv(GL_MODELVIEW_MATRIX, mat);
 
         glPopMatrix();
@@ -363,12 +361,12 @@ void exercise1::draw(context& c) {
 
         for (int i = 0; i < particles; i++)
         {
-            vec3 pos = randomness * vec3(frand() - .5f, 0.f, frand() - .5f)
-                     + vec3(1.5f, -6.f - ascension_speed.y(), 0.f);
-            vec3 vel = randomness * 2.f * vec3(frand() - .3f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
+            dake::vec3 pos = randomness * dake::vec3(frand() - .5f, 0.f, frand() - .5f)
+                           + dake::vec3(1.5f, -6.f - ascension_speed.y(), 0.f);
+            dake::vec3 vel = randomness * 2.f * dake::vec3(frand() - .3f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
 
             dake::particle_generator::instance().new_particle(frand() * 1.5f + 1.f,
-                    vec3(mat * vec4(pos.x(), pos.y(), pos.z(), 1.f)), vec3(mat * vec4(vel.x(), vel.y(), vel.z(), 0.f)))
+                    dake::vec3(mat * dake::vec4(pos.x(), pos.y(), pos.z(), 1.f)), dake::vec3(mat * dake::vec4(vel.x(), vel.y(), vel.z(), 0.f)))
                 .add_force(dake::particle::AIR_DRAG)
                 .add_force(dake::particle::GRAVITY)
                 .add_force(dake::particle::BOUNCE);
@@ -376,12 +374,12 @@ void exercise1::draw(context& c) {
 
         for (int i = 0; i < particles; i++)
         {
-            vec3 pos = randomness * vec3(frand() - .5f, 0.f, frand() - .5f)
-                     + vec3(-1.5f, -6.f - ascension_speed.y(), 0.f);
-            vec3 vel = randomness * 2.f * vec3(frand() - .7f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
+            dake::vec3 pos = randomness * dake::vec3(frand() - .5f, 0.f, frand() - .5f)
+                           + dake::vec3(-1.5f, -6.f - ascension_speed.y(), 0.f);
+            dake::vec3 vel = randomness * 2.f * dake::vec3(frand() - .7f, frand() - .5f, frand() - .5f) - 6.f * ascension_acceleration;
 
             dake::particle_generator::instance().new_particle(frand() * 1.5f + 1.f,
-                    vec3(mat * vec4(pos.x(), pos.y(), pos.z(), 1.f)), vec3(mat * vec4(vel.x(), vel.y(), vel.z(), 0.f)))
+                    dake::vec3(mat * dake::vec4(pos.x(), pos.y(), pos.z(), 1.f)), dake::vec3(mat * dake::vec4(vel.x(), vel.y(), vel.z(), 0.f)))
                 .add_force(dake::particle::AIR_DRAG)
                 .add_force(dake::particle::GRAVITY)
                 .add_force(dake::particle::BOUNCE);
@@ -527,18 +525,18 @@ void exercise1::render_bounding_box(obj_reader* model)
     // faces of the cube and set the polygon mode to line mode
     // using the command glPolygonMode(GL_FRONT_AND_BACK, GL_LINE).
     glColor4f(1.f, 1.f, 1.f, 1.f);
-    vec3 bbox[2] = { model->get_bbox_min(), model->get_bbox_max() }, cur = bbox[0];
+    dake::vec3 bbox[2] = { model->get_bbox_min(), model->get_bbox_max() }, cur = bbox[0];
     for (int z = 0; z < 2; z++)
     {
         glBegin(GL_LINE_LOOP);
         for (int i = 0, gray = 0; i < 4; i++, gray = i ^ (i >> 1))
-            glVertex3fv(vec3(bbox[gray & 1][0], bbox[gray >> 1][1], bbox[z][2]));
+            glVertex3fv(dake::vec3(bbox[gray & 1][0], bbox[gray >> 1][1], bbox[z][2]));
         glEnd();
     }
     glBegin(GL_LINES);
     for (int i = 0, gray = 0; i < 4; i++, gray = i ^ (i >> 1))
         for (int z = 0; z < 2; z++)
-            glVertex3fv(vec3(bbox[gray & 1][0], bbox[gray >> 1][1], bbox[z][2]));
+            glVertex3fv(dake::vec3(bbox[gray & 1][0], bbox[gray >> 1][1], bbox[z][2]));
     glEnd();
 
     // *** End of task 1.2.2 (2) ***
@@ -643,7 +641,7 @@ void exercise1::render_mesh_pointcloud(obj_reader *model)
     glBegin(GL_POINTS);
     // for (auto vertex: model->get_vertices())
     //    glVertex3fv(vertex);
-    for (std::vector<vec3>::const_iterator i = model->get_vertices().begin(); i != model->get_vertices().end(); i++)
+    for (std::vector<dake::vec3>::const_iterator i = model->get_vertices().begin(); i != model->get_vertices().end(); i++)
         glVertex3fv(*i);
     glEnd();
 
@@ -665,9 +663,9 @@ void exercise1::render_mesh_solid(obj_reader *model)
     // indices of the vertices list or normals list, or -1 if
     // the information is not present.
 
-    const std::vector<vec3> &normals = model->get_normals();
-    const std::vector<vec2> &tex_coords = model->get_tex_coords();
-    const std::vector<vec3> &vertices = model->get_vertices();
+    const std::vector<dake::vec3> &normals = model->get_normals();
+    const std::vector<dake::vec2> &tex_coords = model->get_tex_coords();
+    const std::vector<dake::vec3> &vertices = model->get_vertices();
 
     int current_render_mode = -1;
 

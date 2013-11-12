@@ -3,10 +3,7 @@
 
 #include <list>
 
-#include <cgv/math/fvec.h>
-
-typedef cgv::math::fvec<float, 3> vec3;
-
+#include "vector.h"
 
 namespace dake
 {

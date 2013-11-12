@@ -44,11 +44,11 @@ private:
     // Step animation position when the ascension started
     float ascension_step_ani;
     // Current ascension speed
-    vec3 ascension_speed;
+    dake::vec3 ascension_speed;
     // Current center in ascension
-    vec3 ascension_position;
+    dake::vec3 ascension_position;
     // Current ascension acceleration
-    vec3 ascension_acceleration;
+    dake::vec3 ascension_acceleration;
     // Current direction
     float dir_x, dir_y;
 
