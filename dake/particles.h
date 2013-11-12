@@ -43,7 +43,7 @@ class particle_generator
         std::list<particle> particles;
 
     public:
-        particle &new_particle(int lifetime, const vec3 &initial_position, const vec3 &initial_speed);
+        particle &new_particle(float lifetime, const vec3 &initial_position, const vec3 &initial_speed);
         void tick(float time_passed);
         void draw(void);
 

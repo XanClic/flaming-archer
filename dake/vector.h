@@ -7,66 +7,134 @@
 namespace dake
 {
 
+#ifdef __GNUC__
 typedef float raw_v4f __attribute__((vector_size(16)));
+#endif
 
 class vec4
 {
     private:
+#ifdef __GNUC__
         union
         {
             raw_v4f vec;
             float d[4];
         };
+#else
+        float vec[4];
+#endif
 
 
     public:
         vec4(void)
+#ifdef __GNUC__
         { vec = (raw_v4f){ 0.f, 0.f, 0.f, 0.f }; }
+#else
+        { vec[0] = vec[1] = vec[2] = vec[3] = 0.f; }
+#endif
 
         vec4(float x, float y, float z, float w)
+#ifdef __GNUC__
         { vec = (raw_v4f){ x, y, z, w }; }
+#else
+        { vec[0] = x; vec[1] = y; vec[2] = z; vec[3] = w; }
+#endif
 
+#ifdef __GNUC__
         vec4(raw_v4f dat)
         { vec = dat; }
+#endif
 
         vec4(const vec4 &ov)
+#ifdef __GNUC__
         { vec = ov.vec; }
+#else
+        { vec[0] = ov[0]; vec[1] = ov[1]; vec[2] = ov[2]; vec[3] = ov[3]; }
+#endif
 
         vec4 &operator=(float v)
+#ifdef __GNUC__
         { vec = (raw_v4f){ v, v, v, v }; return *this; }
+#else
+        { vec[0] = vec[1] = vec[2] = vec[3] = v; return *this; }
+#endif
 
         vec4 &operator=(const vec4 &ov)
+#ifdef __GNUC__
         { vec = ov.vec; return *this; }
+#else
+        { vec[0] = ov[0]; vec[1] = ov[1]; vec[2] = ov[2]; vec[3] = ov[3]; return *this; }
+#endif
 
         vec4 operator-(void) const
+#ifdef __GNUC__
         { return vec4(-vec); }
+#else
+        { return vec4(-vec[0], -vec[1], -vec[2], -vec[3]); }
+#endif
 
         vec4 &operator+=(const vec4 &ov)
+#ifdef __GNUC__
         { vec += ov.vec; return *this; }
+#else
+        { vec[0] += ov[0]; vec[1] += ov[1]; vec[2] += ov[2]; vec[3] += ov[3]; return *this; }
+#endif
 
         vec4 operator+(const vec4 &ov) const
+#ifdef __GNUC__
         { return vec4(vec + ov.vec); }
+#else
+        { return vec4(vec[0] + ov[0], vec[1] + ov[1], vec[2] + ov[2], vec[3] + ov[3]); }
+#endif
 
         vec4 &operator-=(const vec4 &ov)
+#ifdef __GNUC__
         { vec -= ov.vec; return *this; }
+#else
+        { vec[0] -= ov[0]; vec[1] -= ov[1]; vec[2] -= ov[2]; vec[3] -= ov[3]; return *this; }
+#endif
 
         vec4 operator-(const vec4 &ov) const
+#ifdef __GNUC__
         { return vec4(vec - ov.vec); }
+#else
+        { return vec4(vec[0] - ov[0], vec[1] - ov[1], vec[2] - ov[2], vec[3] - ov[3]); }
+#endif
 
         vec4 &operator*=(float v)
+#ifdef __GNUC__
         { vec *= v; return *this; }
+#else
+        { vec[0] *= v; vec[1] *= v; vec[2] *= v; vec[3] *= v; return *this; }
+#endif
 
         vec4 operator*(float v) const
+#ifdef __GNUC__
         { return vec4(vec * v); }
+#else
+        { return vec4(vec[0] * v, vec[1] * v, vec[2] * v, vec[3] * v); }
+#endif
 
         vec4 &operator/=(float v)
+#ifdef __GNUC__
         { vec /= v; return *this; }
+#else
+        { vec[0] /= v; vec[1] /= v; vec[2] /= v; vec[3] /= v; return *this; }
+#endif
 
         vec4 operator/(float v) const
+#ifdef __GNUC__
         { return vec4(vec / v); }
+#else
+        { return vec4(vec[0] / v, vec[1] / v, vec[2] / v, vec[3] / v); }
+#endif
 
         float length(void) const
+#ifdef __GNUC__
         { raw_v4f tmp = vec * vec; return sqrtf(tmp[0] + tmp[1] + tmp[2] + tmp[3]); }
+#else
+        { return sqrtf(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2] + vec[3] * vec[3]); }
+#endif
 
         vec4 &normalize(void)
         { return *this /= length(); }
@@ -75,10 +143,18 @@ class vec4
         { return *this / length(); }
 
         operator const float *(void) const
+#ifdef __GNUC__
         { return d; }
+#else
+        { return vec; }
+#endif
 
         operator float *(void)
+#ifdef __GNUC__
         { return d; }
+#else
+        { return vec; }
+#endif
 
               float &operator[](int i)       { return vec[i]; }
         const float &operator[](int i) const { return vec[i]; }

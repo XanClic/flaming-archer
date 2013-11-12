@@ -5,6 +5,8 @@
 #include <cgv/render/context.h>
 #include <cgv_gl/gl/gl.h>
 
+#include "dake/vector.h"
+
 #include "obj_reader.h"
 
 using namespace cgv::base;
